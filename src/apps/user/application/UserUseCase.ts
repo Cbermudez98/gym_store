@@ -17,7 +17,14 @@ export class UserUseCase implements IUserUseCase {
         }
     };
 
-    update: (id: number, user: IUserUpdateDto) => Promise<IUser>;
+    async update(id: number, user: IUserUpdateDto): Promise<IUser> {
+        try {
+            return await this._userRepository.updateUser(id, user);
+        } catch (error) {
+            throw error;
+        }
+    };
+
     async get(id: number): Promise<IUser> {
         try {
             const data = await this._userRepository.getUser(id);

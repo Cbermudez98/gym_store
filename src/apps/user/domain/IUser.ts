@@ -21,4 +21,6 @@ export interface IUseCreateDto extends Omit<IUser, "id" | "validated" | "created
 
 export interface IUseCreate extends Omit<IUser, "id" | "validated" | "created_at" | "updated_at" | "validated_at"> {}
 
-export interface IUserUpdateDto extends Partial<IUseCreateDto> {}
+export interface IUserUpdateDto extends Partial<IUseCreateDto> {
+    auth?: number
+}

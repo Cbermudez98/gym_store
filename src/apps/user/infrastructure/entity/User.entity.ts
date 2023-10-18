@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm";
 import { IUser, UserRole } from "../../domain/IUser";
+import { AuthEntity } from "./Auth.entity";
 
 @Entity("user")
 export class UserEntity implements IUser {
@@ -35,4 +36,8 @@ export class UserEntity implements IUser {
 
     @UpdateDateColumn({ default: () => "NOW()" })
     updated_at: Date;
+
+    @OneToOne(() => AuthEntity)
+    @JoinColumn({ name: "auth_id" })
+    auth: AuthEntity;
 }

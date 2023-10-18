@@ -8,7 +8,7 @@ export class RouterHandler {
             res.status(data.status).json(data.data);
         }).catch((error) => {
             Log.error(error);
-            res.status(error?.status).json(error.message || "Internal server error");
+            res.status(error?.status).json({ error: error.message || "Internal server error" });
         })
     }
 }
