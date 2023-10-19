@@ -13,6 +13,7 @@ import { IUserController } from "../../domain/controller/IUserController";
 import { Jwt } from "../../../../utils/Jwt";
 import { IAuthUseCase } from "../../domain/application/IAuthUseCase";
 import { Mailer } from "../../../../utils/Mailer";
+import { IJwtRequest } from "../../domain/IJwtRequest";
 
 @injectable()
 export class UserController implements IUserController {
@@ -29,7 +30,7 @@ export class UserController implements IUserController {
             mail.setTo(user.email);
             mail.setSubject("Welcome to gym store");
 
-            const jwt = new Jwt().sing({ role: user.role, uid:  1 });
+            const jwt = new Jwt().sing({ role: user.role, uid:  data.id });
             
             let file = fs.readFileSync("./src/statics/mail.html", "utf-8");
             const dataToChange: any = { name: `${user.name} ${user.last_name}`, url_confirmation: `${ParameterStore.URL_CONFIRMATION}/${jwt}`};
@@ -60,7 +61,17 @@ export class UserController implements IUserController {
         }
     };
 
-    updateUser: (id: number, user: IUserUpdateDto) => Promise<ResponseModel>;
+    async updateUser(id: number, user: IUserUpdateDto): Promise<ResponseModel> {
+        try {
+            const data = this._userUseCase.update(id, user);
+            return {
+                status: HttpStatusCode._SUCCESS,
+                data
+            }
+        } catch (error) {
+            throw error;
+        }
+    };
 
     async getUser(id: number): Promise<ResponseModel> {
         try {
@@ -69,6 +80,20 @@ export class UserController implements IUserController {
                 status: 200,
                 data
             }
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    async confirmUser(jwt: IJwtRequest): Promise<ResponseModel> {
+        try {
+            await this._userUseCase.update(jwt.uid, { validated: true });
+            const user = await this._userUseCase.getWithAuth(jwt.uid);
+            await this._authUseCase.update(user.auth.id);
+            return {
+                status: HttpStatusCode._SUCCESS,
+                data: { message: "validate with success" }
+            };
         } catch (error) {
             throw error;
         }
