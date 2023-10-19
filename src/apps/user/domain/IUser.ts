@@ -1,3 +1,5 @@
+import { IAuth } from "./IAuth";
+
 export interface IUser {
     id: number;
     name: string;
@@ -12,6 +14,10 @@ export interface IUser {
     validated_at: Date;
 }
 
+export interface IUserAuth extends IUser {
+    auth: IAuth
+}
+
 export enum UserRole {
     User = "User",
     ADMINISTRATOR = "Administrator"
@@ -21,4 +27,7 @@ export interface IUseCreateDto extends Omit<IUser, "id" | "validated" | "created
 
 export interface IUseCreate extends Omit<IUser, "id" | "validated" | "created_at" | "updated_at" | "validated_at"> {}
 
-export interface IUserUpdateDto extends Partial<IUseCreateDto> {}
+export interface IUserUpdateDto extends Partial<IUseCreateDto> {
+    auth?: number,
+    validated?: IUser["validated"]
+}

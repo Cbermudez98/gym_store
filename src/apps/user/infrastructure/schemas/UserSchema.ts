@@ -14,3 +14,11 @@ export const userCreateSchemaDto: Joi.ObjectSchema<IUseCreateDto> = Joi.object({
     password: password.required(),
     username: username.required()
 });
+
+export const userUpdateSchemaDto: Joi.ObjectSchema<IUseCreateDto> = Joi.object({
+    name,
+    last_name,
+    email,
+    password,
+    username
+});

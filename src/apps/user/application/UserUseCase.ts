@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { IUseCreate, IUser, IUserUpdateDto } from "../domain/IUser";
+import { IUseCreate, IUser, IUserAuth, IUserUpdateDto } from "../domain/IUser";
 import { IUserUseCase } from "../domain/application/IUserUseCase";
 import { Types } from "../../../helpers/container/Types";
 import { IUserRepository } from "../domain/repository/IUserRepository";
@@ -17,12 +17,27 @@ export class UserUseCase implements IUserUseCase {
         }
     };
 
-    update: (id: number, user: IUserUpdateDto) => Promise<IUser>;
+    async update(id: number, user: IUserUpdateDto): Promise<IUser> {
+        try {
+            return await this._userRepository.updateUser(id, user);
+        } catch (error) {
+            throw error;
+        }
+    };
+
     async get(id: number): Promise<IUser> {
         try {
             const data = await this._userRepository.getUser(id);
             data.password = undefined as any;
             return data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    async getWithAuth(id: number): Promise<IUserAuth> {
+        try {
+            return await this._userRepository.getUserWithAut(id);
         } catch (error) {
             throw error;
         }
