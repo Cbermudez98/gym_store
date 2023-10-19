@@ -10,6 +10,7 @@ import { UserController } from "./infrastructure/controller/UserController";
 import { UserRole } from "./domain/IUser";
 import { ValidateParams } from "../../middlewares/ValidateParams";
 import { JwtSchema } from "./infrastructure/schemas/JwtSchema";
+import { AuthRole } from "../../middlewares/AuthRole";
 
 class User implements RouterModel {
     private _userController: IUserController = container.get<UserController>(Types.UserController);
@@ -19,7 +20,7 @@ class User implements RouterModel {
     }
 
     register(): Router {
-        this._route.get("/:id", (req: Request, res: Response) => {
+        this._route.get("/:id", AuthRole.validate(UserRole.User), (req: Request, res: Response) => {
             RouterHandler.manage(this._userController.getUser(Number(req.params.id)), req, res);
         });
         
@@ -27,11 +28,15 @@ class User implements RouterModel {
             RouterHandler.manage(this._userController.createUser({ ...req.body, role: UserRole.User }), req, res);
         });
 
+        this._route.post("/admin", ObjectValidatorMiddleware.validate(userCreateSchemaDto), (req: Request, res: Response) => {
+            RouterHandler.manage(this._userController.createUser({ ...req.body, role: UserRole.ADMINISTRATOR }), req, res);
+        });
+
         this._route.post("/confirmation/:jwt", ValidateParams.validateJwt(), ObjectValidatorMiddleware.validate(JwtSchema), (req: Request, res: Response) => {
             RouterHandler.manage(this._userController.confirmUser(req.body), req, res);
         });
 
-        this._route.patch("/:id", ObjectValidatorMiddleware.validate(userUpdateSchemaDto), (req: Request, res: Response) => {
+        this._route.patch("/:id", AuthRole.validate(UserRole.User), ObjectValidatorMiddleware.validate(userUpdateSchemaDto), (req: Request, res: Response) => {
             RouterHandler.manage(this._userController.updateUser(Number(req.params.id), req.body), req, res);
         });
         return this._route;
