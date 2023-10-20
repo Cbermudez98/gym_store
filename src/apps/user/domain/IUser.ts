@@ -31,3 +31,5 @@ export interface IUserUpdateDto extends Partial<IUseCreateDto> {
     auth?: number,
     validated?: IUser["validated"]
 }
+
+export interface IUserLogin extends Pick<IUser, "username" | "password">{};

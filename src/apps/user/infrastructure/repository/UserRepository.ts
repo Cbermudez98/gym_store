@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IUseCreate, IUser, IUserAuth, IUserUpdateDto } from "../../domain/IUser";
+import { IUseCreate, IUser, IUserAuth, IUserLogin, IUserUpdateDto } from "../../domain/IUser";
 import { IUserRepository } from "../../domain/repository/IUserRepository";
 import { Repository } from "typeorm";
 import { UserEntity } from "../entity/User.entity";
@@ -67,5 +67,17 @@ export class UserRepository implements IUserRepository {
             }
         }
     }
+
+    async getUseValidated(user: IUserLogin): Promise<IUser> {
+        try {
+            const data = await this._userRepository.findOneByOrFail({ username: user.username, validated: true });
+            return data;
+        } catch (error) {
+            throw {
+                status: HttpStatusCode._NOT_FOUND,
+                message: HttpMessage._NOT_FOUND
+            }
+        }
+    };
     
 }

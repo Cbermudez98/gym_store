@@ -4,6 +4,7 @@ import { ParameterStore } from "../../utils/ParameterStore";
 import { Log } from "../../helpers/Logs";
 
 import User from "./../../apps/user/ApiRouter";
+import Product from "./../../apps/products/ApiRouter";
 
 export class Server {
     private _app: Application;
@@ -24,7 +25,8 @@ export class Server {
     }
 
     private loadRoutes(): void {
-        this._app.use("/user", User.register())
+        this._app.use("/user", User.register());
+        this._app.use("/product", Product.register());
     }
 
     private listen(): void {

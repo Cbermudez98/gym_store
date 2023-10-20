@@ -3,7 +3,7 @@ import { Request, Response, Router } from "express";
 import { RouterModel } from "../../models/RouterModel";
 import { RouterHandler } from "../../helpers/ResponseHandler";
 import { ObjectValidatorMiddleware } from "../../middlewares/ObjectValidator";
-import { userCreateSchemaDto, userUpdateSchemaDto } from "./infrastructure/schemas/UserSchema";
+import { userCreateSchemaDto, userLoginSchema, userUpdateSchemaDto } from "./infrastructure/schemas/UserSchema";
 import { Types } from "../../helpers/container/Types";
 import { IUserController } from "./domain/controller/IUserController";
 import { UserController } from "./infrastructure/controller/UserController";
@@ -34,6 +34,10 @@ class User implements RouterModel {
 
         this._route.post("/confirmation/:jwt", ValidateParams.validateJwt(), ObjectValidatorMiddleware.validate(JwtSchema), (req: Request, res: Response) => {
             RouterHandler.manage(this._userController.confirmUser(req.body), req, res);
+        });
+
+        this._route.post("/login", ObjectValidatorMiddleware.validate(userLoginSchema), (req: Request, res: Response) => {
+            RouterHandler.manage(this._userController.loginUser(req.body), req, res);
         });
 
         this._route.patch("/:id", AuthRole.validate(UserRole.User), ObjectValidatorMiddleware.validate(userUpdateSchemaDto), (req: Request, res: Response) => {

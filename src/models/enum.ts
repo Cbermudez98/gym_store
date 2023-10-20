@@ -13,5 +13,6 @@ export enum HttpMessage {
     _NOT_FOUND = "Resource not found",
     _UN_PROCESSABLE_ENTITY = "Unprocessable entity",
     _DUPLICATE_RECORD = "Duplicate record",
-    _FORBIDDEN = "Not allowed"
+    _FORBIDDEN = "Not allowed",
+    _PASSWORD_NOT_MATCH = "Password not match"
 }

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Schema } from "joi";
 import { HttpMessage, HttpStatusCode } from "../models/enum";
+import { Log } from "../helpers/Logs";
 
 export class ObjectValidatorMiddleware {
     public static validate(schema: Schema) {

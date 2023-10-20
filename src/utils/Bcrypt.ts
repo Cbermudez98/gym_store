@@ -7,7 +7,7 @@ export class Bcrypt {
         return hashSync(plainTxt, this._salt);
     }
 
-    compare(encryptedTxt: string): boolean {
-        return compareSync(encryptedTxt, this._salt);
+    compare(password: string, encryptedTxt: string): boolean {
+        return compareSync(password, encryptedTxt);
     }
 }

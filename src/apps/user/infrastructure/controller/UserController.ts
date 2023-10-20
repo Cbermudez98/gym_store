@@ -4,10 +4,10 @@ import fs from "fs";
 import { MailBuilder } from "../../../../builder/MailBuilder";
 import { Types } from "../../../../helpers/container/Types";
 import { ResponseModel } from "../../../../models/ResponseModel";
-import { HttpStatusCode } from "../../../../models/enum";
+import { HttpMessage, HttpStatusCode } from "../../../../models/enum";
 import { Bcrypt } from "../../../../utils/Bcrypt";
 import { ParameterStore } from "../../../../utils/ParameterStore";
-import { IUseCreate, IUser, IUserUpdateDto } from "../../domain/IUser";
+import { IUseCreate, IUser, IUserLogin, IUserUpdateDto } from "../../domain/IUser";
 import { IUserUseCase } from "../../domain/application/IUserUseCase";
 import { IUserController } from "../../domain/controller/IUserController";
 import { Jwt } from "../../../../utils/Jwt";
@@ -93,6 +93,27 @@ export class UserController implements IUserController {
             return {
                 status: HttpStatusCode._SUCCESS,
                 data: { message: "validate with success" }
+            };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    async loginUser(user: IUserLogin): Promise<ResponseModel> {
+        try {
+            const userFound = await this._userUseCase.login(user);
+            const valid = new Bcrypt().compare( user.password, userFound.password);
+            if (!valid) {
+                throw {
+                    status: HttpStatusCode._FORBIDDEN,
+                    message: HttpMessage._PASSWORD_NOT_MATCH
+                }
+            }
+
+            const token = new Jwt().sing({ role: userFound.role, uuid: userFound.id });
+            return {
+                status: HttpStatusCode._SUCCESS,
+                data: { token }
             };
         } catch (error) {
             throw error;
