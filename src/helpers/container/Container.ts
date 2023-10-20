@@ -10,6 +10,12 @@ import { IAuthUseCase } from "../../apps/user/domain/application/IAuthUseCase";
 import { IAuthRepository } from "../../apps/user/domain/repository/IAuthRepository";
 import { AuthRepository } from "../../apps/user/infrastructure/repository/AuthRepository";
 import { AuthUseCase } from "../../apps/user/application/AuthUseCase";
+import { IProductController } from "../../apps/products/domain/controller/IProductController";
+import { ProductController } from "../../apps/products/infrastructure/controller/ProductController";
+import { IProductRepository } from "../../apps/products/domain/repository/IProductRepository";
+import { ProductRepository } from "../../apps/products/infrastructure/repository/ProductRepository";
+import { IProductUseCase } from "../../apps/products/domain/application/IProductUseCase";
+import { ProductUseCase } from "../../apps/products/application/ProductUseCase";
 
 const container = new Container();
 
@@ -18,5 +24,8 @@ container.bind<IUserUseCase>(Types.UserUseCase).to(UserUseCase);
 container.bind<IUserRepository>(Types.UserRepository).to(UserRepository);
 container.bind<IAuthRepository>(Types.AuthRepository).to(AuthRepository);
 container.bind<IAuthUseCase>(Types.AuthUseCase).to(AuthUseCase);
+container.bind<IProductController>(Types.ProductController).to(ProductController);
+container.bind<IProductRepository>(Types.ProductRepository).to(ProductRepository);
+container.bind<IProductUseCase>(Types.ProductUseCase).to(ProductUseCase);
 
 export { container };

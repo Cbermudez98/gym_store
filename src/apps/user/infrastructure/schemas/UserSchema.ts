@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { IUseCreateDto } from "../../domain/IUser";
+import { IUseCreateDto, IUserLogin } from "../../domain/IUser";
 
 const email = Joi.string().email();
 const password = Joi.string();
@@ -21,4 +21,9 @@ export const userUpdateSchemaDto: Joi.ObjectSchema<IUseCreateDto> = Joi.object({
     email,
     password,
     username
+});
+
+export const userLoginSchema: Joi.ObjectSchema<IUserLogin> = Joi.object({
+    username: username.required(),
+    password: password.required()
 });
