@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import fs from "fs";
 
-import { MailBuilder } from "../../../../builder/MailBuilder";
+import { Builder } from "../../../../builder/Builder";
 import { Types } from "../../../../helpers/container/Types";
 import { ResponseModel } from "../../../../models/ResponseModel";
 import { HttpMessage, HttpStatusCode } from "../../../../models/enum";
@@ -14,6 +14,7 @@ import { Jwt } from "../../../../utils/Jwt";
 import { IAuthUseCase } from "../../domain/application/IAuthUseCase";
 import { Mailer } from "../../../../utils/Mailer";
 import { IJwtRequest } from "../../domain/IJwtRequest";
+import { IMail } from "../../../../models/Mail";
 
 @injectable()
 export class UserController implements IUserController {
@@ -25,10 +26,10 @@ export class UserController implements IUserController {
         try {
             const password = new Bcrypt().encrypt(user.password);
             const data = await this._userUseCase.save({ ...user, password });
-            const mail = new MailBuilder();
-            mail.setFrom(ParameterStore.SERVICE_MAIL_USER);
-            mail.setTo(user.email);
-            mail.setSubject("Welcome to gym store");
+            const mail = new Builder<IMail>();
+            mail.set("from",ParameterStore.SERVICE_MAIL_USER);
+            mail.set("to", user.email);
+            mail.set("subject", "Welcome to gym store");
 
             const jwt = new Jwt().sing({ role: user.role, uid:  data.id });
             
@@ -39,7 +40,7 @@ export class UserController implements IUserController {
                 file = file.replace(`%${current}%`, change);
             }
 
-            mail.setHtml(file);
+            mail.set("html", file);
 
             const auth = await this._authUseCase.add({
                 jwt,

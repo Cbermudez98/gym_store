@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { IUser, UserRole } from "../../domain/IUser";
 import { AuthEntity } from "./Auth.entity";
+import { ICart } from "../../../cart/domain/ICart";
+import { CartEntity } from "../../../cart/infrastructure/entity/Cart.entity";
 
 @Entity("user")
 export class UserEntity implements IUser {
@@ -40,4 +42,7 @@ export class UserEntity implements IUser {
     @OneToOne(() => AuthEntity)
     @JoinColumn({ name: "auth_id" })
     auth: AuthEntity;
+
+    @OneToMany(() => CartEntity, (cart) => cart.user)
+    carts: CartEntity[];
 }

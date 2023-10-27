@@ -1,5 +1,6 @@
+import { CartEntity } from '../../../cart/infrastructure/entity/Cart.entity';
 import { IProduct } from './../../domain/IProducts';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from "typeorm";
 
 @Entity("product")
 export class ProductEntity implements IProduct {
@@ -29,4 +30,7 @@ export class ProductEntity implements IProduct {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @ManyToMany(() => CartEntity, { cascade: true })
+    carts: CartEntity[];
 }
